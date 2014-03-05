@@ -277,6 +277,24 @@ AddHeader "X-My-Header" "Powered by Tinyproxy"
     to `Yes` changes the policy do deny everything but the domains
     or URLs matched by the filtering rules.
 
+*SnReplace*::
+
+    Tinyproxy supports modifying URLs through the use of regex.
+    This option specifies the location of the file containing the
+    search and replace rules, one rule per line.
+
+*SnReplaceExtended*::
+
+    If this boolean option is set to `Yes`, then extended POSIX
+    regular expressions are used for matching the search and replace
+    rules. The default is to use basic POSIX regular expressions.
+
+*SnReplaceCaseSensitive*::
+
+    If this boolean option is set to `Yes`, then the search and
+    replace rules are matched in a case sensitive manner. The default
+    is to match case-insensitively.
+
 *Anonymous*::
 
     If an `Anonymous` keyword is present, then anonymous proxying
