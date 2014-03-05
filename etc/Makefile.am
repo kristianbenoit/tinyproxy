@@ -3,8 +3,14 @@ pkgsysconfdir = $(sysconfdir)/$(PACKAGE)
 pkgsysconf_DATA = \
 	tinyproxy.conf
 
+if SNREPLACE_ENABLE
+pkgsysconf_DATA += snreplace
+endif
+
+
 EXTRA_DIST = \
-	tinyproxy.conf.in
+	tinyproxy.conf.in \
+	snreplace
 
 edit = sed \
 	-e 's|@bindir[@]|$(bindir)|g' \

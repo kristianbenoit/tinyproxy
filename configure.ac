@@ -110,6 +110,7 @@ if test x"$snreplace_enabled" = x"yes"; then
     ADDITIONAL_OBJECTS="$ADDITIONAL_OBJECTS snreplace.o"
     AC_DEFINE(SNREPLACE_ENABLE)
 fi
+AM_CONDITIONAL([SNREPLACE_ENABLE], [test x"$snreplace_enabled" = x"yes"])
 
 dnl Include support for upstream proxies?
 AH_TEMPLATE([UPSTREAM_SUPPORT],

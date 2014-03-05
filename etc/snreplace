@@ -1,0 +1,25 @@
+##
+## snreplace -- tinyproxy search and replace configuration file
+##
+## This file contains one search and replace per line, the first
+## character indicate the character used to split the search
+## from the substitution expression.
+##
+## Format, using @ as the separation character:
+## @regex@subtitution
+##
+## \[1-9] in the substitution will be replaced by the corresponging
+## matched group.
+## 
+## & in the substitution will be replaced by the sequence matched by
+## the regex.
+##
+
+#
+# This expression force safe search on google. You will also need to
+# cname *.google.* to nosslsearch.google.com to give the proxy
+# access to the URL in the request.
+#
+# See https://support.google.com/websearch/answer/186669
+#
+#@https\?://[^/]*\.google\.[^/]*/\(search\|s\).*@&\&safe=active
