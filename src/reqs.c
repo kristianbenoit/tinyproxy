@@ -32,6 +32,7 @@
 #include "buffer.h"
 #include "conns.h"
 #include "filter.h"
+#include "snreplace.h"
 #include "hashmap.h"
 #include "heap.h"
 #include "html-error.h"
@@ -306,6 +307,9 @@ static struct request_s *process_request (struct conn_s *connptr,
         struct request_s *request;
         int ret;
         size_t request_len;
+#ifdef FILTER_ENABLE
+        int skip_filter = 0;
+#endif
 
         /* NULL out all the fields so frees don't cause segfaults. */
         request =
@@ -377,6 +381,27 @@ BAD_REQUEST_ERROR:
                 url = reverse_url;
         }
 #endif
+#ifdef SNREPLACE_ENABLE
+        if (config.snreplace != NULL)
+        {
+                char *new_url;
+                size_t new_len = request_len + 128;
+                DEBUG1("Trying to replace the url...");
+                
+                new_url = (char *) safemalloc (new_len);
+                ret = snreplace_url(url, new_url, new_len);
+                if (ret) {
+                        log_message (LOG_INFO, "Replacing url \"%s\" for \"%s\"", url, new_url);
+                        safefree(url);
+                        url = new_url;
+# ifdef FILTER_ENABLE
+                        skip_filter = 1;
+# endif
+                }
+                else
+                        safefree(new_url);
+        }
+#endif
 
         if (strncasecmp (url, "http://", 7) == 0
             || (UPSTREAM_CONFIGURED () && strncasecmp (url, "ftp://", 6) == 0))
@@ -434,7 +459,7 @@ BAD_REQUEST_ERROR:
         /*
          * Filter restricted domains/urls
          */
-        if (config.filter) {
+        if (config.filter && !skip_filter) {
                 if (config.filter_url)
                         ret = filter_url (url);
                 else

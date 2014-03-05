@@ -131,6 +131,11 @@ static HANDLE_FUNC (handle_filterdefaultdeny);
 static HANDLE_FUNC (handle_filterextended);
 static HANDLE_FUNC (handle_filterurls);
 #endif
+#ifdef SNREPLACE_ENABLE
+static HANDLE_FUNC (handle_snreplace);
+static HANDLE_FUNC (handle_snreplacecasesensitive);
+static HANDLE_FUNC (handle_snreplaceextended);
+#endif
 static HANDLE_FUNC (handle_group);
 static HANDLE_FUNC (handle_listen);
 static HANDLE_FUNC (handle_logfile);
@@ -241,6 +246,12 @@ struct {
         STDCONF ("filterdefaultdeny", BOOL, handle_filterdefaultdeny),
         STDCONF ("filtercasesensitive", BOOL, handle_filtercasesensitive),
 #endif
+#ifdef SNREPLACE_ENABLE
+        /* filtering */
+        STDCONF ("snreplace", STR, handle_snreplace),
+        STDCONF ("snreplaceextended", BOOL, handle_snreplaceextended),
+        STDCONF ("snreplacecasesensitive", BOOL, handle_snreplacecasesensitive),
+#endif
 #ifdef REVERSE_SUPPORT
         /* Reverse proxy arguments */
         STDCONF ("reversebaseurl", STR, handle_reversebaseurl),
@@ -292,6 +303,9 @@ static void free_config (struct config_s *conf)
 #ifdef FILTER_ENABLE
         safefree (conf->filter);
 #endif                          /* FILTER_ENABLE */
+#ifdef SNREPLACE_ENABLE
+        safefree (conf->snreplace);
+#endif   
 #ifdef REVERSE_SUPPORT
         free_reversepath_list(conf->reversepath_list);
         safefree (conf->reversebaseurl);
@@ -488,6 +502,15 @@ static void initialize_with_defaults (struct config_s *conf,
         conf->filter_extended = defaults->filter_extended;
         conf->filter_casesensitive = defaults->filter_casesensitive;
 #endif                          /* FILTER_ENABLE */
+
+#ifdef SNREPLACE_ENABLE
+        if (defaults->snreplace) {
+                conf->snreplace = safestrdup (defaults->snreplace);
+        }
+
+        conf->snreplace_extended = defaults->snreplace_extended;
+        conf->snreplace_casesensitive = defaults->snreplace_casesensitive;
+#endif                          /* SNREPLACE_ENABLE */
 
 #ifdef XTINYPROXY_ENABLE
         conf->add_xtinyproxy = defaults->add_xtinyproxy;
@@ -1022,6 +1045,23 @@ static HANDLE_FUNC (handle_filterdefaultdeny)
 static HANDLE_FUNC (handle_filtercasesensitive)
 {
         return set_bool_arg (&conf->filter_casesensitive, line, &match[2]);
+}
+#endif
+
+#ifdef SNREPLACE_ENABLE
+static HANDLE_FUNC (handle_snreplace)
+{
+        return set_string_arg (&conf->snreplace, line, &match[2]);
+}
+
+static HANDLE_FUNC (handle_snreplaceextended)
+{
+        return set_bool_arg (&conf->snreplace_extended, line, &match[2]);
+}
+
+static HANDLE_FUNC (handle_snreplacecasesensitive)
+{
+        return set_bool_arg (&conf->snreplace_casesensitive, line, &match[2]);
 }
 #endif
 

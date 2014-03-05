@@ -41,6 +41,7 @@
 #include "child.h"
 #include "log.h"
 #include "reqs.h"
+#include "snreplace.h"
 #include "sock.h"
 #include "stats.h"
 #include "utils.h"
@@ -165,6 +166,11 @@ display_usage (void)
         printf ("    Filtering\n");
         features++;
 #endif /* FILTER_ENABLE */
+
+#ifdef SNREPLACE_ENABLE
+        printf ("    Search and replace\n");
+        features++;
+#endif /* SNREPLACE_ENABLE */
 
 #ifndef NDEBUG
         printf ("    Debugging code\n");
@@ -429,6 +435,11 @@ main (int argc, char **argv)
                 filter_init ();
 #endif /* FILTER_ENABLE */
 
+#ifdef SNREPLACE_ENABLE
+        if (config.snreplace)
+                snreplace_init ();
+#endif /* SNREPLACE_ENABLE */
+
         /* Start listening on the selected port. */
         if (child_listening_sockets(config.listen_addrs, config.port) < 0) {
                 fprintf (stderr, "%s: Could not create listening sockets.\n",
@@ -506,6 +517,11 @@ main (int argc, char **argv)
         if (config.filter)
                 filter_destroy ();
 #endif /* FILTER_ENABLE */
+
+#ifdef SNREPLACE_ENABLE
+        if (config.snreplace)
+                snreplace_destroy ();
+#endif /* SNREPLACE_ENABLE */
 
         shutdown_logging ();
 

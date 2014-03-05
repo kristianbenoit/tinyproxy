@@ -51,6 +51,7 @@ tinyproxy_SOURCES = \
 
 EXTRA_tinyproxy_SOURCES = filter.c filter.h \
 	reverse-proxy.c reverse-proxy.h \
+	snreplace.c snreplace.h \
 	transparent-proxy.c transparent-proxy.h
 tinyproxy_DEPENDENCIES = @ADDITIONAL_OBJECTS@
 tinyproxy_LDADD = @ADDITIONAL_OBJECTS@

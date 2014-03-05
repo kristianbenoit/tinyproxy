@@ -25,6 +25,7 @@
 #include "child.h"
 #include "daemon.h"
 #include "filter.h"
+#include "snreplace.h"
 #include "heap.h"
 #include "log.h"
 #include "reqs.h"
@@ -175,6 +176,9 @@ static void child_sighup_handler (int sig)
 #ifdef FILTER_ENABLE
                 filter_reload ();
 #endif /* FILTER_ENABLE */
+#ifdef SNREPLACE_ENABLE
+                snreplace_reload ();
+#endif /* SNREPLACE_ENABLE */
         }
 }
 
@@ -513,6 +517,9 @@ void child_main_loop (void)
 #ifdef FILTER_ENABLE
                         filter_reload ();
 #endif /* FILTER_ENABLE */
+#ifdef SNREPLACE_ENABLE
+                        snreplace_reload ();
+#endif /* SNREPLACE_ENABLE */
 
                         /* propagate filter reload to all children */
                         child_kill_children (SIGHUP);

@@ -99,6 +99,18 @@ if test x"$filter_enabled" = x"yes"; then
     AC_DEFINE(FILTER_ENABLE)
 fi
 
+dnl Include search and replace for URLs
+AH_TEMPLATE([SNREPLACE_ENABLE],
+	    [Defined if you would like the search and replace code included.])
+TP_ARG_ENABLE(snreplace,
+              [Enable search and replace of URLS (default is no)],
+              no)
+
+if test x"$snreplace_enabled" = x"yes"; then
+    ADDITIONAL_OBJECTS="$ADDITIONAL_OBJECTS snreplace.o"
+    AC_DEFINE(SNREPLACE_ENABLE)
+fi
+
 dnl Include support for upstream proxies?
 AH_TEMPLATE([UPSTREAM_SUPPORT],
             [Include support for connecting to an upstream proxy.])

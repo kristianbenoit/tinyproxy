@@ -16,6 +16,7 @@ static const char * const authors[] =
         "John van der Kamp",
         "Jordi Mallach",
         "Kim Holviala",
+        "Kristian Benoit",
         "Mathew Mrosko",
         "Matthew Dempsky",
         "Michael Adam",

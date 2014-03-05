@@ -45,6 +45,9 @@ include:
 --enable-filter::
     Allows Tinyproxy to filter out certain domains and URLs.
 
+--enable-snreplace::
+    Allows Tinyproxy to modify a requested URL, enforcing a pattern.
+
 --enable-upstream::
     Enable support for proxying connections through another proxy server.
 
