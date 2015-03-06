@@ -85,9 +85,9 @@ void snreplace_init (void)
         p = NULL;
 
         cflags = REG_NEWLINE;
-        if (config.snreplace_extended)
+        if (config.filter_extended)
                 cflags |= REG_EXTENDED;
-        if (!config.snreplace_casesensitive)
+        if (!config.filter_casesensitive)
                 cflags |= REG_ICASE;
 
         while (fgets (buf, SNREPLACE_BUFFER_LEN, fd)) {

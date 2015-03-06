@@ -126,15 +126,16 @@ static HANDLE_FUNC (handle_errorfile);
 static HANDLE_FUNC (handle_addheader);
 #ifdef FILTER_ENABLE
 static HANDLE_FUNC (handle_filter);
-static HANDLE_FUNC (handle_filtercasesensitive);
 static HANDLE_FUNC (handle_filterdefaultdeny);
-static HANDLE_FUNC (handle_filterextended);
 static HANDLE_FUNC (handle_filterurls);
+#endif
+#if defined(FILTER_ENABLE) || defined(SNREPLACE_ENABLE)
+static HANDLE_FUNC (handle_filtercasesensitive);
+static HANDLE_FUNC (handle_filterextended);
 #endif
 #ifdef SNREPLACE_ENABLE
 static HANDLE_FUNC (handle_snreplace);
-static HANDLE_FUNC (handle_snreplacecasesensitive);
-static HANDLE_FUNC (handle_snreplaceextended);
+static HANDLE_FUNC (handle_snreplaceskipfilter);
 #endif
 static HANDLE_FUNC (handle_group);
 static HANDLE_FUNC (handle_listen);
@@ -242,15 +243,16 @@ struct {
         /* filtering */
         STDCONF ("filter", STR, handle_filter),
         STDCONF ("filterurls", BOOL, handle_filterurls),
-        STDCONF ("filterextended", BOOL, handle_filterextended),
         STDCONF ("filterdefaultdeny", BOOL, handle_filterdefaultdeny),
+#endif
+#if defined(FILTER_ENABLE) || defined(SNREPLACE_ENABLE)
+        STDCONF ("filterextended", BOOL, handle_filterextended),
         STDCONF ("filtercasesensitive", BOOL, handle_filtercasesensitive),
 #endif
 #ifdef SNREPLACE_ENABLE
-        /* filtering */
+        /* Search and Replace */
         STDCONF ("snreplace", STR, handle_snreplace),
-        STDCONF ("snreplaceextended", BOOL, handle_snreplaceextended),
-        STDCONF ("snreplacecasesensitive", BOOL, handle_snreplacecasesensitive),
+        STDCONF ("snreplaceskipfilter", BOOL, handle_snreplaceskipfilter),
 #endif
 #ifdef REVERSE_SUPPORT
         /* Reverse proxy arguments */
@@ -499,6 +501,9 @@ static void initialize_with_defaults (struct config_s *conf,
         }
 
         conf->filter_url = defaults->filter_url;
+#endif
+
+#if defined(FILTER_ENABLE) || defined(SNREPLACE_ENABLE)
         conf->filter_extended = defaults->filter_extended;
         conf->filter_casesensitive = defaults->filter_casesensitive;
 #endif                          /* FILTER_ENABLE */
@@ -508,8 +513,7 @@ static void initialize_with_defaults (struct config_s *conf,
                 conf->snreplace = safestrdup (defaults->snreplace);
         }
 
-        conf->snreplace_extended = defaults->snreplace_extended;
-        conf->snreplace_casesensitive = defaults->snreplace_casesensitive;
+        conf->snreplace_skipfilter = defaults->snreplace_skipfilter;
 #endif                          /* SNREPLACE_ENABLE */
 
 #ifdef XTINYPROXY_ENABLE
@@ -1028,11 +1032,6 @@ static HANDLE_FUNC (handle_filterurls)
         return set_bool_arg (&conf->filter_url, line, &match[2]);
 }
 
-static HANDLE_FUNC (handle_filterextended)
-{
-        return set_bool_arg (&conf->filter_extended, line, &match[2]);
-}
-
 static HANDLE_FUNC (handle_filterdefaultdeny)
 {
         assert (match[2].rm_so != -1);
@@ -1040,6 +1039,13 @@ static HANDLE_FUNC (handle_filterdefaultdeny)
         if (get_bool_arg (line, &match[2]))
                 filter_set_default_policy (FILTER_DEFAULT_DENY);
         return 0;
+}
+#endif
+
+#if defined(FILTER_ENABLE) || definedSNREPLACE_ENABLE
+static HANDLE_FUNC (handle_filterextended)
+{
+        return set_bool_arg (&conf->filter_extended, line, &match[2]);
 }
 
 static HANDLE_FUNC (handle_filtercasesensitive)
@@ -1054,15 +1060,11 @@ static HANDLE_FUNC (handle_snreplace)
         return set_string_arg (&conf->snreplace, line, &match[2]);
 }
 
-static HANDLE_FUNC (handle_snreplaceextended)
+static HANDLE_FUNC (handle_snreplaceskipfilter)
 {
-        return set_bool_arg (&conf->snreplace_extended, line, &match[2]);
+        return set_bool_arg (&conf->snreplace_skipfilter, line, &match[2]);
 }
 
-static HANDLE_FUNC (handle_snreplacecasesensitive)
-{
-        return set_bool_arg (&conf->snreplace_casesensitive, line, &match[2]);
-}
 #endif
 
 #ifdef REVERSE_SUPPORT

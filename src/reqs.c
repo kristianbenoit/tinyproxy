@@ -395,7 +395,8 @@ BAD_REQUEST_ERROR:
                         safefree(url);
                         url = new_url;
 # ifdef FILTER_ENABLE
-                        skip_filter = 1;
+                        if (config.snreplace_skipfilter)
+                                skip_filter = 1;
 # endif
                 }
                 else

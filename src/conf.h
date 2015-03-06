@@ -50,14 +50,15 @@ struct config_s {
 #ifdef FILTER_ENABLE
         char *filter;
         unsigned int filter_url;        /* boolean */
+#endif
+#ifdef SNREPLACE_ENABLE
+        char *snreplace;
+        unsigned int snreplace_skipfilter; /* boolean */
+#endif                          /* SNREPLACE_ENABLE */
+#if defined(FILTER_ENABLE) || defined(SNREPLACE_ENABLE)
         unsigned int filter_extended;   /* boolean */
         unsigned int filter_casesensitive;      /* boolean */
 #endif                          /* FILTER_ENABLE */
-#ifdef SNREPLACE_ENABLE
-        char *snreplace;
-        unsigned int snreplace_extended;   /* boolean */
-        unsigned int snreplace_casesensitive;      /* boolean */
-#endif                          /* SNREPLACE_ENABLE */
 #ifdef XTINYPROXY_ENABLE
         unsigned int add_xtinyproxy; /* boolean */
 #endif
